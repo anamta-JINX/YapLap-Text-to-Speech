@@ -1,0 +1,12 @@
+{
+  "name": "YapNet Emotional TTS",
+  "expected_checkpoint": "yaplab_emotion_tts.pt",
+  "checkpoint_included": false,
+  "reason": "A real checkpoint must be produced by GPU training on the licensed datasets; an untrained placeholder is intentionally not mislabeled as trained.",
+  "architecture": "character encoder + speaker/emotion/accent conditioning + length predictor + convolutional mel decoder",
+  "recommended_datasets": ["LJSpeech", "RAVDESS"],
+  "optional_accent_dataset": "VCTK",
+  "runtime_voices": ["Zubeda", "Khalda", "Samundar Khan", "Jameed"],
+  "emotions": ["neutral", "happy", "sad", "angry"],
+  "accents": ["general", "american", "british", "australian", "indian"]
+}
