@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd frontend && npx pnpm@11.25.0 install --frozen-lockfile && npx pnpm@11.25.0 run build",
+  "buildCommand": "cd frontend && npx pnpm@11.25.0 install --frozen-lockfile && npx pnpm@11.25.0 run build && rm -rf node_modules .sites-runtime .vinext .next .wrangler dist/server",
   "functions": {
     "app.py": {
       "maxDuration": 60,
