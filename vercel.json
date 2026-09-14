@@ -1,11 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd frontend && npx pnpm@11.25.0 install --frozen-lockfile",
-  "buildCommand": "cd frontend && npx pnpm@11.25.0 run build",
+  "buildCommand": "cd frontend && npx pnpm@11.25.0 install --frozen-lockfile && npx pnpm@11.25.0 run build",
   "functions": {
     "app.py": {
       "maxDuration": 60,
-      "excludeFiles": "{training/**,data/**,tests/**,requirements-training.txt,frontend/node_modules/**,frontend/.vinext/**,frontend/.next/**}"
+      "excludeFiles": "{training/**,data/**,tests/**,requirements-training.txt,frontend/node_modules/**,frontend/.vinext/**,frontend/.next/**,frontend/dist/server/**}"
     }
   }
 }
