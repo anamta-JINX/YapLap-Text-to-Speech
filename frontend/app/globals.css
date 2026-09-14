@@ -79,14 +79,10 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 3px sol
 .plane-cursor-layer { display: none; }
 
 @media (pointer: fine) {
-  html.has-plane-cursor body,
-  html.has-plane-cursor a,
-  html.has-plane-cursor button,
-  html.has-plane-cursor select,
-  html.has-plane-cursor [role="button"] { cursor: none !important; }
-  html.has-plane-cursor textarea,
-  html.has-plane-cursor input,
-  html.has-plane-cursor [contenteditable="true"] { cursor: text !important; }
+  html.has-plane-cursor,
+  html.has-plane-cursor *,
+  html.has-plane-cursor *::before,
+  html.has-plane-cursor *::after { cursor: none !important; }
   .plane-cursor-layer {
     position: fixed;
     inset: 0;
@@ -97,7 +93,6 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 3px sol
     transition: opacity 100ms ease;
   }
   .plane-cursor-layer.is-active { opacity: 1; }
-  .plane-cursor-layer.is-suspended { opacity: 0; }
   .plane-cursor-icon,
   .plane-cursor-dot {
     position: fixed;
@@ -105,17 +100,18 @@ button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 3px sol
     left: 0;
     will-change: transform;
   }
-  .plane-cursor-icon { z-index: 2; width: 36px; height: 36px; }
-  .plane-cursor-icon svg {
+  .plane-cursor-icon { z-index: 2; width: 34px; height: 37px; }
+  .plane-cursor-sprite {
     display: block;
-    fill: var(--white);
-    stroke: var(--ink);
-    stroke-linecap: square;
-    stroke-linejoin: miter;
-    filter: drop-shadow(3px 3px 0 #7b7b7b);
-    transition: scale 90ms ease;
+    width: 100%;
+    height: 100%;
+    /* Show only the yellow plane in the original, unmodified sprite sheet. */
+    background: url("/paper-plane-pack.png") no-repeat -10px -5px;
+    background-size: 93px 46.571429px;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
   }
-  .plane-cursor-layer.is-clicking .plane-cursor-icon svg { scale: 0.82; }
+  .plane-cursor-layer.is-clicking .plane-cursor-sprite { filter: brightness(0.95); }
   .plane-cursor-dot {
     width: 6px;
     height: 4px;

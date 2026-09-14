@@ -4,7 +4,7 @@ YapLab is an emotional text-to-speech studio with a React + Tailwind frontend an
 
 ## Quick start
 
-The downloadable archive includes the built frontend, so the normal run only needs Python 3.10+. Node 22+ and pnpm/npm are needed when you edit or rebuild the React source.
+The downloadable archive includes the built frontend, so running an up-to-date build only needs Python 3.10+. Node 22.13+ and pnpm/npm are needed when you edit or rebuild the React source. If a rebuild is needed and build dependencies are missing, `app.py` installs them automatically first; that first installation needs internet access.
 
 ```bash
 python -m venv .venv
@@ -27,7 +27,18 @@ pnpm install
 pnpm dev
 ```
 
-If the built frontend is missing or older than the source, `python app.py` rebuilds it automatically after Node dependencies are installed.
+If the built frontend is missing or older than the source, `python app.py` checks for the local build tools, installs missing Node dependencies (including development dependencies), and rebuilds it automatically. It stops with the package manager's error if installation or building fails.
+
+If you previously saw `ERR_MODULE_NOT_FOUND` for `vinext/dist/cli.js`, run the updated `python app.py` again. For a manual repair in PowerShell:
+
+```powershell
+cd frontend
+pnpm install --prod=false --frozen-lockfile
+# If pnpm is not installed, use instead:
+# npm install --include=dev --include=optional
+cd ..
+python app.py
+```
 
 YapLab uses lightweight online neural speech for more natural output and downloadable MP3 audio. It needs an internet connection while generating, but no GPU or API key. If neural speech is unavailable, the backend tries the optional local YapNet checkpoint and then the computer's installed speech voices. On Linux, install `espeak-ng` for that final offline fallback.
 

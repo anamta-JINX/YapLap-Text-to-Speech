@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { readExecutionProfile } from "./execution-profile.mjs";
 
@@ -18,6 +19,13 @@ if (managedLinux && command === "build") {
 const cli = new URL(managedLinux
   ? "../node_modules/vite/bin/vite.js"
   : "../node_modules/vinext/dist/cli.js", import.meta.url);
+if (!existsSync(cli)) {
+  console.error("YapLab frontend build dependencies are missing or incomplete.");
+  console.error("From the frontend folder, run: pnpm install --prod=false --frozen-lockfile");
+  console.error("Or, if you use npm: npm install --include=dev --include=optional");
+  console.error("Then run this command again, or run python app.py from the project root.");
+  process.exit(1);
+}
 process.argv = [process.execPath, fileURLToPath(cli), command,
   ...(!managedLinux && command === "dev" ? ["--port", "5173"] : []), ...args];
 await import(cli.href);

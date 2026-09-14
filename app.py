@@ -1,4 +1,4 @@
-"""Build the React frontend and run the YapLab FastAPI application."""
+"""Install/build the React frontend as needed, then run YapLab locally."""
 from __future__ import annotations
 
 import shutil
@@ -49,16 +49,65 @@ def build_frontend_if_needed() -> None:
         return
 
     package_manager = shutil.which("pnpm") or shutil.which("npm")
-    if not package_manager:
-        raise RuntimeError(
-            "Node.js with pnpm or npm is required for the first frontend build."
+    if not shutil.which("node") or not package_manager:
+        raise SystemExit(
+            "YapLab needs Node.js 22.13+ with npm or pnpm to rebuild the frontend.\n"
+            "Install Node.js, reopen your terminal, and run python app.py again."
         )
 
-    subprocess.run(
-        [package_manager, "run", "build"],
-        cwd=FRONTEND_ROOT,
-        check=True,
+    is_pnpm = Path(package_manager).stem.lower() == "pnpm"
+    install_args = (
+        ["install", "--prod=false", "--frozen-lockfile"]
+        if is_pnpm
+        else ["install", "--include=dev", "--include=optional", "--no-audit", "--no-fund"]
     )
+
+    # A restored or incomplete node_modules directory can exist without the CLI.
+    required_files = [
+        "vinext/dist/cli.js",
+        "vite/bin/vite.js",
+        "react/package.json",
+        "@cloudflare/vite-plugin/package.json",
+    ]
+
+    def dependencies_ready() -> bool:
+        return all(
+            (FRONTEND_ROOT / "node_modules" / filename).is_file()
+            for filename in required_files
+        )
+
+    def run_step(arguments: list[str], label: str) -> None:
+        try:
+            subprocess.run(
+                [package_manager, *arguments],
+                cwd=FRONTEND_ROOT,
+                check=True,
+            )
+        except subprocess.CalledProcessError as exc:
+            raise SystemExit(
+                f"YapLab {label} failed (exit code {exc.returncode}).\n"
+                "See the package manager error above. Fix that error, then run python app.py again."
+            ) from None
+        except OSError as exc:
+            raise SystemExit(f"YapLab could not start {package_manager}: {exc}") from None
+
+    if not dependencies_ready():
+        print("Installing missing frontend dependencies (internet required)...", flush=True)
+        run_step(install_args, "frontend dependency installation")
+        if not dependencies_ready():
+            raise SystemExit(
+                "Frontend installation finished, but required build packages are still missing.\n"
+                f'Open "{FRONTEND_ROOT}" and run: '
+                f'{Path(package_manager).stem} {" ".join(install_args)}'
+            )
+
+    print("Building the YapLab frontend...", flush=True)
+    run_step(["run", "build"], "frontend build")
+    if not FRONTEND_INDEX.is_file():
+        raise SystemExit(
+            "The frontend build did not produce frontend/dist/client/index.html.\n"
+            "Check the build output above before restarting YapLab."
+        )
 
 
 if __name__ == "__main__":

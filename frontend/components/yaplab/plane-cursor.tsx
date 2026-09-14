@@ -1,6 +1,5 @@
 "use client";
 
-import { Send } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 const TRAIL_LENGTH = 7;
@@ -22,10 +21,9 @@ export function PlaneCursor() {
     const trail = Array.from({ length: TRAIL_LENGTH }, () => ({ ...pointer }));
     let frame = 0;
 
-    document.documentElement.classList.add("has-plane-cursor");
-
     const draw = () => {
-      plane.style.transform = `translate3d(${pointer.x - 5}px, ${pointer.y - 5}px, 0) rotate(-17deg)`;
+      // Keep the pixel artwork on whole pixels, with its tip at the click point.
+      plane.style.transform = `translate3d(${Math.round(pointer.x) - 2}px, ${Math.round(pointer.y) - 1}px, 0)`;
 
       let lead = pointer;
       trail.forEach((point, index) => {
@@ -45,14 +43,15 @@ export function PlaneCursor() {
     const onPointerMove = (event: PointerEvent) => {
       pointer.x = event.clientX;
       pointer.y = event.clientY;
-      const target = event.target instanceof Element ? event.target : null;
-      const overTextField = Boolean(target?.closest("textarea, input, [contenteditable='true']"));
-      layer.classList.toggle("is-suspended", overTextField);
+      document.documentElement.classList.add("has-plane-cursor");
       layer.classList.add("is-active");
     };
     const onPointerDown = () => layer.classList.add("is-clicking");
     const onPointerUp = () => layer.classList.remove("is-clicking");
-    const onPointerLeave = () => layer.classList.remove("is-active");
+    const onPointerLeave = () => {
+      layer.classList.remove("is-active", "is-clicking");
+      document.documentElement.classList.remove("has-plane-cursor");
+    };
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("pointerdown", onPointerDown, { passive: true });
@@ -82,7 +81,7 @@ export function PlaneCursor() {
         />
       ))}
       <div ref={planeRef} className="plane-cursor-icon">
-        <Send size={34} strokeWidth={2.8} />
+        <span className="plane-cursor-sprite" />
       </div>
     </div>
   );
