@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build"
+    "build": "node -e \"require('fs').rmSync('out',{recursive:true,force:true})\" && next build"
   },
   "dependencies": {
     "@radix-ui/react-radio-group": "1.4.7",
