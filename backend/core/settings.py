@@ -18,6 +18,6 @@ class Settings:
         return cls(
             project_root=root,
             frontend_root=frontend,
-            frontend_build=frontend / "dist" / "client",
+            frontend_build=frontend / "out",
             checkpoint=root / "models" / "yaplab_emotion_tts.pt",
         )

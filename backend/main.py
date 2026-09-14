@@ -23,7 +23,7 @@ def create_application(project_root: Path) -> FastAPI:
 
     app = FastAPI(
         title="YapLab API",
-        version="2.3.0",
+        version="2.8.0",
         lifespan=lifespan,
     )
     app.add_middleware(

@@ -1,0 +1,34 @@
+# Keep the GitHub project complete while uploading only deployment inputs.
+.git/
+.github/
+.vercel/
+.vscode/
+
+# Local and generated files.
+**/__pycache__/
+**/*.py[cod]
+**/*.tsbuildinfo
+**/.DS_Store
+.env*
+.venv/
+coverage/
+frontend/node_modules/
+frontend/.next/
+frontend/.vinext/
+frontend/dist/
+frontend/.wrangler/
+
+# Offline training and project-only material are not part of production.
+data/
+docs/
+models/
+tests/
+training/
+requirements-training.txt
+
+# Legacy preview tooling is retained in GitHub but not sent to Vercel.
+frontend/.openai/
+frontend/build/
+frontend/scripts/
+frontend/cloudflare-env.d.ts
+frontend/vite.config.ts

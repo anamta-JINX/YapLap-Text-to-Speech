@@ -1,10 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd frontend && npx pnpm@11.25.0 install --frozen-lockfile && npx pnpm@11.25.0 run build && rm -rf node_modules .sites-runtime .vinext .next .wrangler dist/server",
+  "buildCommand": "cd frontend && npx --yes pnpm@11.25.0 install --frozen-lockfile && npx --yes pnpm@11.25.0 run build && rm -rf node_modules .next",
   "functions": {
     "app.py": {
       "maxDuration": 60,
-      "excludeFiles": "{training/**,data/**,tests/**,requirements-training.txt,frontend/node_modules/**,frontend/.sites-runtime/**,frontend/.vinext/**,frontend/.next/**,frontend/.wrangler/**,frontend/dist/server/**}"
+      "excludeFiles": "{training/**,data/**,docs/**,tests/**,models/**,requirements-training.txt,frontend/node_modules/**,frontend/.next/**,frontend/app/**,frontend/build/**,frontend/components/**,frontend/data/**,frontend/lib/**,frontend/public/**,frontend/scripts/**,frontend/vendor/**,frontend/.openai/**,frontend/*.json,frontend/*.yaml,frontend/*.mjs,frontend/*.ts,frontend/*.tsx,frontend/*.tsbuildinfo}"
     }
   }
 }

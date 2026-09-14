@@ -2,9 +2,11 @@
 
 YapLab is an emotional text-to-speech studio with a React + Tailwind frontend and a FastAPI backend. The root `app.py` builds the frontend when needed, starts the API, and serves everything together at `http://127.0.0.1:8000`.
 
+The production build uses Next.js static export and a deliberately small runtime dependency set. Training code, local datasets, generated caches, and frontend build tooling stay in the repository but are excluded from the Vercel function bundle.
+
 ## Quick start
 
-The downloadable archive includes the built frontend, so running an up-to-date build only needs Python 3.10+. Node 22.13+ and pnpm/npm are needed when you edit or rebuild the React source. If a rebuild is needed and build dependencies are missing, `app.py` installs them automatically first; that first installation needs internet access.
+Python 3.10+ is required for the API. Node 22.13+ and pnpm/npm are needed for the first frontend build and whenever the React source changes. If the static export is missing or outdated, `app.py` installs missing build dependencies and rebuilds it automatically; that first installation needs internet access.
 
 ```bash
 python -m venv .venv
@@ -29,7 +31,7 @@ pnpm dev
 
 If the built frontend is missing or older than the source, `python app.py` checks for the local build tools, installs missing Node dependencies (including development dependencies), and rebuilds it automatically. It stops with the package manager's error if installation or building fails.
 
-If you previously saw `ERR_MODULE_NOT_FOUND` for `vinext/dist/cli.js`, run the updated `python app.py` again. For a manual repair in PowerShell:
+If a frontend dependency is missing, run the updated `python app.py` again. For a manual repair in PowerShell:
 
 ```powershell
 cd frontend

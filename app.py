@@ -19,7 +19,7 @@ except ModuleNotFoundError as exc:
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 FRONTEND_ROOT = PROJECT_ROOT / "frontend"
-FRONTEND_INDEX = FRONTEND_ROOT / "dist" / "client" / "index.html"
+FRONTEND_INDEX = FRONTEND_ROOT / "out" / "index.html"
 
 app = create_application(PROJECT_ROOT)
 
@@ -64,10 +64,9 @@ def build_frontend_if_needed() -> None:
 
     # A restored or incomplete node_modules directory can exist without the CLI.
     required_files = [
-        "vinext/dist/cli.js",
-        "vite/bin/vite.js",
+        "next/dist/bin/next",
         "react/package.json",
-        "@cloudflare/vite-plugin/package.json",
+        "react-dom/package.json",
     ]
 
     def dependencies_ready() -> bool:
@@ -105,7 +104,7 @@ def build_frontend_if_needed() -> None:
     run_step(["run", "build"], "frontend build")
     if not FRONTEND_INDEX.is_file():
         raise SystemExit(
-            "The frontend build did not produce frontend/dist/client/index.html.\n"
+            "The frontend build did not produce frontend/out/index.html.\n"
             "Check the build output above before restarting YapLab."
         )
 
