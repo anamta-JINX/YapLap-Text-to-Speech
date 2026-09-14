@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "echo 'Using committed production assets'",
-  "buildCommand": "echo 'Static export is ready'",
+  "installCommand": null,
+  "buildCommand": "python -m backend.verify_deployment",
   "outputDirectory": "frontend/out",
   "functions": {
     "app.py": {
