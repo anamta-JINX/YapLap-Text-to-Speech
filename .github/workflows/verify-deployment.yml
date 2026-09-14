@@ -17,11 +17,12 @@ on:
 
 permissions:
   contents: read
+  statuses: read
 
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -33,3 +34,11 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Verify startup, UI assets, API, and real speech
         run: python -m backend.verify_deployment --speech
+      - name: Verify the deployed production UI and speech
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -m backend.verify_production
+          --url https://yaplab-bluejinnx.vercel.app
+          --wait-deployment

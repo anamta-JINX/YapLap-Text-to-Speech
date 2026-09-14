@@ -74,15 +74,15 @@ def require(condition: bool, message: str) -> None:
         raise RuntimeError(message)
 
 
-async def verify(speech: bool = False) -> None:
+async def verify(speech: bool = False, request_fn=request) -> None:
     require(callable(edge_tts.Communicate), "The neural speech dependency is missing.")
     require(FRONTEND_INDEX.is_file(), "frontend/out/index.html is missing.")
 
     async with app.router.lifespan_context(app):
-        status, _, content = await request("/api/health")
+        status, _, content = await request_fn("/api/health")
         require(status == 200 and json.loads(content)["status"] == "ok", "Health check failed.")
 
-        status, _, content = await request("/api/voices")
+        status, _, content = await request_fn("/api/voices")
         voices = json.loads(content)
         require(status == 200, "Voice catalogue failed.")
         require(
@@ -93,7 +93,7 @@ async def verify(speech: bool = False) -> None:
         require(len(voices["emotions"]) == 4 and len(voices["accents"]) == 5,
                 "Tone or accent options are missing.")
 
-        status, headers, content = await request("/")
+        status, headers, content = await request_fn("/")
         require(status == 200 and "text/html" in headers.get("content-type", ""),
                 "The homepage did not return HTML.")
         require(content == FRONTEND_INDEX.read_bytes(), "The homepage differs from the static export.")
@@ -104,15 +104,15 @@ async def verify(speech: bool = False) -> None:
         for path in sorted(links.paths):
             source = (root / path.lstrip("/")).resolve()
             require(source.is_relative_to(root) and source.is_file(), f"Missing frontend asset: {path}")
-            status, _, content = await request(path)
+            status, _, content = await request_fn(path)
             require(status == 200 and content == source.read_bytes(), f"Asset response failed: {path}")
 
-        status, _, _ = await request("/api/tts", {"text": ""})
+        status, _, _ = await request_fn("/api/tts", {"text": ""})
         require(status == 422, "Speech request validation failed.")
         print(f"PASS: app startup, health, voices, homepage, {len(links.paths)} assets, and API validation.")
 
         if speech:
-            status, headers, content = await request(
+            status, headers, content = await request_fn(
                 "/api/tts",
                 {
                     "text": "Your words called. They wanna yap.",
